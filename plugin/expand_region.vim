@@ -15,13 +15,15 @@ call expand_region#init()
 " ==============================================================================
 " Mappings
 " ==============================================================================
-if !hasmapto('<Plug>(expand_region_expand)')
-  nmap + <Plug>(expand_region_expand)
-  vmap + <Plug>(expand_region_expand)
-endif
-if !hasmapto('<Plug>(expand_region_shrink)')
-  vmap _ <Plug>(expand_region_shrink)
-  nmap _ <Plug>(expand_region_shrink)
+if get(g:, 'expand_region_use_defaults', 1)
+    if !hasmapto('<Plug>(expand_region_expand)')
+        nmap + <Plug>(expand_region_expand)
+        vmap + <Plug>(expand_region_expand)
+    endif
+    if !hasmapto('<Plug>(expand_region_shrink)')
+        vmap _ <Plug>(expand_region_shrink)
+        nmap _ <Plug>(expand_region_shrink)
+
 endif
 
 nnoremap <silent> <Plug>(expand_region_expand)
