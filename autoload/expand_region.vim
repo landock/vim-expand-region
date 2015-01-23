@@ -146,10 +146,10 @@ function! s:get_candidate_dict(text_object)
   let winview = winsaveview()
 
   " Use ! as much as possible
-  exec 'normal! v'
-  exec 'silent! normal '.a:text_object
+  silent! exec 'normal! v'
+  silent! exec 'silent! normal '.a:text_object
   " The double quote is important
-  exec "normal! \<Esc>"
+  silent! exec "normal! \<Esc>"
 
   let selection = s:get_visual_selection()
   let ret = {
@@ -169,6 +169,11 @@ endfunction
 " filetype. Filetype-specific dictionaries will be loaded if they exist
 " and the global dictionary will be used as a fallback.
 function! s:get_configuration()
+
+    if exists("b:expand_region_text_objects")
+        return b:expand_region_text_objects
+endif
+
   let configuration = {}
   for ft in split(&ft, '\.')
     if exists("g:expand_region_text_objects_".ft)
@@ -213,7 +218,7 @@ function! s:get_candidate_list()
     let l:count = 2
     let previous = i.length
     while 1
-      let test = l:count.i.text_object
+      let test = repeat(i.text_object, l:count)
       let candidate = s:get_candidate_dict(test)
       if candidate.length ==# 0
         break
