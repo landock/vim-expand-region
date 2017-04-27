@@ -324,7 +324,9 @@ function! s:expand_region(mode, direction)
   if a:direction ==# '+'
     " Expanding
     if s:cur_index ==# len(s:candidates) - 1
-      normal! gv
+      "normal! gv
+      " switch to normal mode after there are no more candidates
+      exec "normal! \<Esc>" 
     else
       let s:cur_index+=1
       " Associate the window view with the text object
