@@ -1,21 +1,22 @@
-" ==============================================================================
-" File: expand_region.vim
-" Author: Terry Ma
-" Forked By: Mike Easley
-" Description: Incrementally select larger regions of text in visual mode by
-" repeating the same key combination
-" Last Modified: January 21, 2014
-" ==============================================================================
+vim9script
+# =============================================================================
+# File: expand_region.vim
+# Author: Terry Ma
+# Forked By: Mike Easley
+# Description: Incrementally select larger regions of text in visual mode by
+# repeating the same key combination
+# Last Modified: January 21, 2014
+# =============================================================================
 
-let s:save_cpo = &cpo
+var save_cpo = &cpo
 set cpo&vim
 
-" Init global vars
-call expand_region#init()
+# Init global vars
+expand_region#init()
 
-" ==============================================================================
-" Mappings
-" ==============================================================================
+# =============================================================================
+# Mappings
+# =============================================================================
 if get(g:, 'expand_region_use_defaults', 1)
     if !hasmapto('<Plug>(expand_region_expand)')
         nmap + <Plug>(expand_region_expand)
@@ -30,7 +31,7 @@ endif
 
 nnoremap <silent> <Plug>(expand_region_expand)
             \ :<C-U>call expand_region#next('n', '+')<CR>
-" Map keys differently depending on which mode is desired
+# Map keys differently depending on which mode is desired
 if expand_region#use_select_mode()
     snoremap <silent> <Plug>(expand_region_expand)
                 \ :<C-U>call expand_region#next('v', '+')<CR>
@@ -43,5 +44,4 @@ else
                 \ :<C-U>call expand_region#next('v', '-')<CR>
 endif
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
+&cpo = save_cpo
