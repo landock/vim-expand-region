@@ -1,0 +1,10 @@
+set nocompatible
+filetype off
+set rtp+=.
+set rtp+=vader.vim
+set rtp+=plugin
+filetype plugin indent on
+syntax on
+
+" Disable any conflicting plugins
+let g:expand_region_use_defaults = 0

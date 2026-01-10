@@ -1,0 +1,14 @@
+Before:
+  unlet! b:expand_region_text_objects
+  let g:expand_region_use_defaults = 0
+  unlet! g:expand_region_text_objects_custom
+  unlet! g:expand_region_text_objects_ft
+
+Execute (Custom text objects globally):
+  call expand_region#custom_text_objects({'ic': 0})
+  Assert has_key(g:expand_region_text_objects, 'ic'), 'Should add custom object'
+
+Execute (Custom text objects per filetype):
+  call expand_region#custom_text_objects('vim', {'if': 1})
+  Assert has_key(g:expand_region_text_objects_vim, 'if'), 'Should add ft-specific object'
+  Assert g:expand_region_text_objects_vim['if'] == 1, 'Recursive flag should be set'

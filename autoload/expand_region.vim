@@ -59,7 +59,7 @@ endfunction
 " Returns whether we should perform the region highlighting use visual mode or
 " select mode
 function! expand_region#use_select_mode()
-  return g:expand_region_use_select_mode || index(split(s:saved_selectmode, ','), 'cmd') != -1
+  return g:expand_region_use_select_mode || index(split(&selectmode, ','), 'cmd') != -1
 endfunction
 
 " Main function

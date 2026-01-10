@@ -1,0 +1,4 @@
+#!/bin/bash
+# Clone vader.vim and run tests
+git clone --depth 1 https://github.com/junegunn/vader.vim.git
+vim -Es -Nu test/vimrc -c 'Vader! test/*.vader'
