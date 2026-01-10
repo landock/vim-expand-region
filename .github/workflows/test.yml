@@ -1,0 +1,19 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        vim_version: ['v9.0.0000', 'v9.1.0000', 'stable']
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          version: ${{ matrix.vim_version }}
+      - run: git clone --depth 1 https://github.com/junegunn/vader.vim.git
+      - run: vim -Es -Nu test/vimrc -c 'Vader! test/*.vader'
