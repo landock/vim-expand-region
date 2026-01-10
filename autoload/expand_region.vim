@@ -89,11 +89,6 @@ let s:cur_index = -1
 " length: The number of characters for the text object
 let s:candidates = []
 
-" This is used to save the user's selectmode setting. If the user's selectmode
-" contains 'cmd', then our expansion should result in the region selected under
-" select mode.
-let s:saved_selectmode = &selectmode
-
 " ==============================================================================
 " Functions
 " ==============================================================================
@@ -172,7 +167,7 @@ function! s:get_configuration()
 
     if exists("b:expand_region_text_objects")
         return b:expand_region_text_objects
-endif
+    endif
 
   let configuration = {}
   for ft in split(&ft, '\.')
@@ -326,7 +321,7 @@ function! s:expand_region(mode, direction)
     if s:cur_index ==# len(s:candidates) - 1
       "normal! gv
       " switch to normal mode after there are no more candidates
-      exec "normal! \<Esc>" 
+      exec "normal! \<Esc>"
     else
       let s:cur_index+=1
       " Associate the window view with the text object
