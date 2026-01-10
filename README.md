@@ -7,12 +7,16 @@
 - IntelliJ's [syntax aware selection](http://www.jetbrains.com/idea/documentation/tips/#tips_code_editing)
 - Eclipse's [select enclosing element](http://stackoverflow.com/questions/4264047/intellij-ctrlw-equivalent-shortcut-in-eclipse)
 
+## Requirements
+- Vim 9.0 or later
+- Vader.vim for testing (optional)
+
 <p align="center">
   <img src="https://raw.github.com/terryma/vim-expand-region/master/expand-region.gif" alt="vim-expand-region" />
 </p>
 
 ## Installation
-Install using [Pathogen], [Vundle], [Neobundle], or your favorite Vim package manager.
+Requires Vim 9.0 or later. Install using [Pathogen], [Vundle], [Neobundle], or your favorite Vim package manager.
 
 ## Quick Start
 Press ```+``` to expand the visual selection and ```_``` to shrink it.
