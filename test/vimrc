@@ -7,4 +7,4 @@ filetype plugin indent on
 syntax on
 
 " Disable any conflicting plugins
-let g:expand_region_use_defaults = 0
+let g:expand_region_use_defaults = 1

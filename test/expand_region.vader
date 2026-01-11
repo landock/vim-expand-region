@@ -1,6 +1,28 @@
 Before:
   unlet! b:expand_region_text_objects
-  let g:expand_region_use_defaults = 0
+  let g:expand_region_use_defaults = 1
+
+  function! ExpandRegionTestVisualText() abort
+    let start_pos = getpos('v')
+    let end_pos = getpos('.')
+    if start_pos[1] ==# 0 || end_pos[1] ==# 0 || start_pos ==# end_pos
+      let start_pos = getpos("'<")
+      let end_pos = getpos("'>")
+    endif
+    if start_pos[1] ==# 0 || end_pos[1] ==# 0
+      return ''
+    endif
+    if start_pos[1] > end_pos[1] || (start_pos[1] ==# end_pos[1] && start_pos[2] > end_pos[2])
+      let tmp = start_pos
+      let start_pos = end_pos
+      let end_pos = tmp
+    endif
+    if start_pos[1] !=# end_pos[1]
+      return ''
+    endif
+    let line = getline(start_pos[1])
+    return strpart(line, start_pos[2] - 1, end_pos[2] - start_pos[2] + 1)
+  endfunction
 
 Execute (Basic word expansion works):
   normal! Ohello world test

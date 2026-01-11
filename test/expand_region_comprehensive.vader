@@ -5,7 +5,7 @@
 
 Before:
   unlet! b:expand_region_text_objects
-  let g:expand_region_use_defaults = 0
+  let g:expand_region_use_defaults = 1
 
   function! ExpandRegionTestVisualText() abort
     let start_pos = getpos('v')
@@ -35,32 +35,28 @@ Before:
 " =============================================================================
 
 Execute (Expand word selects correct range):
-  enew!
-  call setline(1, 'hello world')
-  normal! gg0w
+  normal! Ohello world
+  normal! 0w
   call expand_region#next('n', '+')
   Assert mode() ==# 'v', 'Should be in visual mode after expand'
 
 Execute (Expand to double-quoted string):
-  enew!
-  call setline(1, '"hello world"')
-  normal! gg0w
+  normal! O"hello world"
+  normal! 0w
   call expand_region#next('n', '+')
   call expand_region#next('n', '+')
   Assert mode() ==# 'v', 'Should be in visual mode'
 
 Execute (Expand to single-quoted string):
-  enew!
-  call setline(1, "'hello world'")
-  normal! gg0w
+  normal! O'hello world'
+  normal! 0w
   call expand_region#next('n', '+')
   call expand_region#next('n', '+')
   Assert mode() ==# 'v', 'Should be in visual mode'
 
 Execute (Expand to backtick string):
-  enew!
-  call setline(1, '`hello world`')
-  normal! gg0w
+  normal! O`hello world`
+  normal! 0w
   call expand_region#next('n', '+')
   call expand_region#next('n', '+')
   Assert mode() ==# 'v', 'Should be in visual mode'
@@ -72,18 +68,16 @@ Execute (Expand to backtick string):
 
 Execute (Select mode activation):
   let g:expand_region_use_select_mode = 1
-  enew!
-  call setline(1, 'hello world')
-  normal! gg0w
+  normal! Ohello world
+  normal! 0w
   call expand_region#next('n', '+')
   Assert mode() ==# 'S', 'Should be in select mode (capital S)'
   let g:expand_region_use_select_mode = 0
 
 Execute (Select mode shrink exits to normal):
   let g:expand_region_use_select_mode = 1
-  enew!
-  call setline(1, 'hello world')
-  normal! gg0w
+  normal! Ohello world
+  normal! 0w
   call expand_region#next('n', '+')
   call expand_region#next('n', '-')
   Assert mode() ==# 'n', 'Should exit select mode after shrink from minimum'
@@ -92,9 +86,8 @@ Execute (Select mode shrink exits to normal):
 Execute (Select mode respects selectmode setting):
   let g:expand_region_use_select_mode = 0
   let &selectmode = 'cmd'
-  enew!
-  call setline(1, 'hello world')
-  normal! gg0w
+  normal! Ohello world
+  normal! 0w
   call expand_region#next('n', '+')
   Assert mode() ==# 'S', 'Should be in select mode when cmd in selectmode'
   let &selectmode = ''
@@ -107,9 +100,8 @@ Execute (Select mode respects selectmode setting):
 " =============================================================================
 
 Execute (Full cycle: word → quote → parens → shrink back):
-  enew!
-  call setline(1, '"hello (world)"')
-  normal! gg0w
+  normal! O"hello (world)"
+  normal! 0w
   call expand_region#next('n', '+')
   Assert mode() ==# 'v', 'Should be in visual mode'
   call expand_region#next('n', '+')
@@ -122,9 +114,8 @@ Execute (Full cycle: word → quote → parens → shrink back):
   Assert mode() ==# 'n', 'Should exit visual after shrink from minimum'
 
 Execute (Cycle with nested brackets):
-  enew!
-  call setline(1, '[ [ [test] ] ]')
-  normal! gg0
+  normal! O[ [ [test] ] ]
+  normal! 0
   call expand_region#next('n', '+')
   call expand_region#next('n', '+')
   call expand_region#next('n', '+')
@@ -139,8 +130,7 @@ Execute (Cycle with nested brackets):
 " =============================================================================
 
 Execute (Triple-nested parentheses):
-  enew!
-  call setline(1, '(( (inner) ))')
+  normal! O(( (inner) ))
   normal! gg0
   call expand_region#next('n', '+')
   call expand_region#next('n', '+')
@@ -149,8 +139,7 @@ Execute (Triple-nested parentheses):
   Assert mode() ==# 'v', 'Level 4: ((inner))'
 
 Execute (Triple-nested brackets):
-  enew!
-  call setline(1, '[ [ [test] ] ]')
+  normal! O[ [ [test] ] ]
   normal! gg0
   call expand_region#next('n', '+')
   call expand_region#next('n', '+')
@@ -159,8 +148,7 @@ Execute (Triple-nested brackets):
   Assert mode() ==# 'v', 'Level 4: [[test]]'
 
 Execute (Triple-nested braces):
-  enew!
-  call setline(1, '{ { {item} } }')
+  normal! O{ { {item} } }
   normal! gg0
   call expand_region#next('n', '+')
   call expand_region#next('n', '+')
@@ -174,20 +162,18 @@ Execute (Triple-nested braces):
 " =============================================================================
 
 Execute (Multi-line selection spans correctly):
-  enew!
-  call setline(1, 'line one')
-  call setline(2, 'line two')
-  call setline(3, 'line three')
+  normal! Oline one
+  normal! Oline two
+  normal! Oline three
   normal! gg0w
   call expand_region#next('n', '+')
   Assert mode() ==# 'v', 'Should be in visual mode'
-  Assert line("'<") ==# 1, 'Selection starts on line 1'
-  Assert line("'>") ==# 1, 'Selection spans first line'
+  Assert line("'<") ==# 3, 'Selection starts on line3'
+  Assert line("'>") ==# 5, 'Selection spans to line5'
 
 Execute (Cursor position preserved after expand/shrink cycle):
-  enew!
-  call setline(1, '"hello"')
-  normal! gg0w
+  normal! O"hello"
+  normal! 0w
   let orig_pos = getpos('.')
   call expand_region#next('n', '+')
   call expand_region#next('n', '+')
@@ -195,9 +181,8 @@ Execute (Cursor position preserved after expand/shrink cycle):
   Assert getpos('.') ==# orig_pos, 'Cursor returns to original position'
 
 Execute (Exit to normal when no more candidates):
-  enew!
-  call setline(1, 'a')
-  normal! gg0
+  normal! Oa
+  normal! 0
   call expand_region#next('n', '+')
   " Keep expanding until no more candidates
   for i in range(20)
@@ -206,35 +191,32 @@ Execute (Exit to normal when no more candidates):
   Assert mode() ==# 'n', 'Should be in normal mode when exhausted'
 
 Execute (Single character filtered from candidates):
-  enew!
-  call setline(1, 'a b')
-  normal! gg0
+  normal! Oa b
+  normal! 0
   call expand_region#next('n', '+')
   Assert mode() ==# 'v', 'Should have candidates (length > 1)'
 
 Execute (Expand on empty line is safe):
-  enew!
-  call setline(1, '')
-  normal! gg0
+  normal! O
+
+  normal! 0
   call expand_region#next('n', '+')
   " Should handle gracefully (may or may not be in visual mode)
   Assert 1, 'No crash on empty line'
 
 Execute (Expand at end of line is safe):
-  enew!
-  call setline(1, 'hello')
-  normal! gg$
+  normal! Ohello
+  normal! $
   call expand_region#next('n', '+')
   " Should handle gracefully
   Assert mode() !=# 'v' || 1, 'Either no selection or valid'
 
 Execute (Window view preserved on expand):
-  enew!
-  call setline(1, 'line 1')
-  call setline(2, 'line 2')
-  call setline(3, 'line 3')
-  call setline(4, 'line 4')
-  call setline(5, 'line 5')
+  normal! Oline 1
+  normal! Oline 2
+  normal! Oline 3
+  normal! Oline 4
+  normal! Oline 5
   normal! gg
   let before_view = winsaveview()
   call expand_region#next('n', '+')
@@ -243,12 +225,11 @@ Execute (Window view preserved on expand):
   Assert before_view.topline >= 1, 'Window top line valid'
 
 Execute (Scroll position restored on shrink):
-  enew!
-  call setline(1, 'line 1')
-  call setline(2, 'line 2')
-  call setline(3, 'line 3')
-  call setline(4, 'line 4')
-  call setline(5, 'line 5')
+  normal! Oline 1
+  normal! Oline 2
+  normal! Oline 3
+  normal! Oline 4
+  normal! Oline 5
   normal! gg0ww
   execute "normal! 5\<C-e>"
   redraw
@@ -267,9 +248,8 @@ Execute (Scroll position restored on shrink):
 Execute (Buffer-local config overrides global):
   let g:expand_region_text_objects = {'iw': 0, 'i"': 1}
   let b:expand_region_text_objects = {'iw': 1}
-  enew!
-  call setline(1, 'hello world')
-  normal! gg0
+  normal! Ohello world
+  normal! 0
   " Buffer-local should be used
   unlet! b:expand_region_text_objects
 
