@@ -1,4 +1,11 @@
-#!/bin/bash
-# Clone vader.vim and run tests
-git clone --depth 1 https://github.com/junegunn/vader.vim.git
-vim -Es -Nu test/vimrc -c 'Vader! test/*.vader'
+#!/usr/bin/env bash
+set -euo pipefail
+
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$root_dir"
+
+if [[ ! -d "vader.vim" ]]; then
+  git clone --depth 1 https://github.com/junegunn/vader.vim.git vader.vim
+fi
+
+vim -Es -Nu test/vimrc -c 'Vader! test/*.vader' -c 'qa!'

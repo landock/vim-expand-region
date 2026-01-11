@@ -15,5 +15,4 @@ jobs:
       - uses: rhysd/action-setup-vim@v1
         with:
           version: ${{ matrix.vim_version }}
-      - run: git clone --depth 1 https://github.com/junegunn/vader.vim.git
-      - run: vim -Es -Nu test/vimrc -c 'Vader! test/*.vader'
+      - run: bash test/run

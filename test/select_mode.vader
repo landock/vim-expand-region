@@ -3,13 +3,13 @@ Before:
   let g:expand_region_use_defaults = 0
 
 Execute (Default is visual mode):
-  Assert expand_region#use_select_mode() == 0, 'Should default to visual mode'
+  Assert expand_region#UseSelectMode() == 0, 'Should default to visual mode'
 
 Execute (Select mode can be enabled):
   let g:expand_region_use_select_mode = 1
-  Assert expand_region#use_select_mode() == 1, 'Select mode should be enabled'
+  Assert expand_region#UseSelectMode() == 1, 'Select mode should be enabled'
 
 Execute (Select mode respects selectmode setting):
   let g:expand_region_use_select_mode = 0
   let &selectmode = 'cmd'
-  Assert expand_region#use_select_mode() == 1, 'Should use select mode when cmd in selectmode'
+  Assert expand_region#UseSelectMode() == 1, 'Should use select mode when cmd in selectmode'

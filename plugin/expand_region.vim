@@ -12,7 +12,7 @@ var save_cpo = &cpo
 set cpo&vim
 
 # Init global vars
-expand_region#init()
+expand_region#Init()
 
 # =============================================================================
 # Mappings
@@ -30,18 +30,20 @@ if get(g:, 'expand_region_use_defaults', 1)
 endif
 
 nnoremap <silent> <Plug>(expand_region_expand)
-            \ :<C-U>call expand_region#next('n', '+')<CR>
+            \ :<C-U>call expand_region#Next('n', '+')<CR>
+nnoremap <silent> <Plug>(expand_region_shrink)
+            \ :<C-U>call expand_region#Next('v', '-')<CR>
 # Map keys differently depending on which mode is desired
-if expand_region#use_select_mode()
+if expand_region#UseSelectMode()
     snoremap <silent> <Plug>(expand_region_expand)
-                \ :<C-U>call expand_region#next('v', '+')<CR>
+                \ :<C-U>call expand_region#Next('v', '+')<CR>
     snoremap <silent> <Plug>(expand_region_shrink)
-                \ :<C-U>call expand_region#next('v', '-')<CR>
+                \ :<C-U>call expand_region#Next('v', '-')<CR>
 else
     xnoremap <silent> <Plug>(expand_region_expand)
-                \ :<C-U>call expand_region#next('v', '+')<CR>
+                \ :<C-U>call expand_region#Next('v', '+')<CR>
     xnoremap <silent> <Plug>(expand_region_shrink)
-                \ :<C-U>call expand_region#next('v', '-')<CR>
+                \ :<C-U>call expand_region#Next('v', '-')<CR>
 endif
 
 &cpo = save_cpo

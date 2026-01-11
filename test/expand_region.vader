@@ -1,37 +1,76 @@
 Before:
   unlet! b:expand_region_text_objects
-  let g:expand_region_use_defaults = 0
+  let g:expand_region_use_defaults = 1
+  runtime plugin/expand_region.vim
+
+  function! ExpandRegionTestVisualText() abort
+    let start_pos = getpos('v')
+    let end_pos = getpos('.')
+    if start_pos[1] ==# 0 || end_pos[1] ==# 0 || start_pos ==# end_pos
+      let start_pos = getpos("'<")
+      let end_pos = getpos("'>")
+    endif
+    if start_pos[1] ==# 0 || end_pos[1] ==# 0
+      return ''
+    endif
+    if start_pos[1] > end_pos[1] || (start_pos[1] ==# end_pos[1] && start_pos[2] > end_pos[2])
+      let tmp = start_pos
+      let start_pos = end_pos
+      let end_pos = tmp
+    endif
+    if start_pos[1] !=# end_pos[1]
+      return ''
+    endif
+    let line = getline(start_pos[1])
+    return strpart(line, start_pos[2] - 1, end_pos[2] - start_pos[2] + 1)
+  endfunction
 
 Execute (Basic word expansion works):
-  normal! Ohello world test
-  normal! 0w
-  call expand_region#next('n', '+')
-  Assert 1 == 1, 'Expand executed without error'
+  enew!
+  call setline(1, 'hello world test')
+  normal! gg0w
+  call feedkeys('+', 'xt')
+  Assert ExpandRegionTestVisualText() ==# 'world', 'Should expand to current word'
 
 Execute (Expand to quotes works):
-  normal! O"hello world"
-  normal! 0w
-  call expand_region#next('n', '+')
-  Assert 1 == 1, 'Expand to quotes executed without error'
+  enew!
+  call setline(1, '"hello world"')
+  normal! gg0w
+  call feedkeys('+', 'xt')
+  Assert ExpandRegionTestVisualText() ==# 'hello', 'First expand should select word'
+  call feedkeys('+', 'xt')
+  call feedkeys('+', 'xt')
+  Assert ExpandRegionTestVisualText() ==# 'hello world', 'Should eventually expand to inside quotes'
 
 Execute (Nested parentheses):
-  normal! O((inner) middle)
-  normal! 0w
-  call expand_region#next('n', '+')
-  Assert 1 == 1, 'Nested parens expansion executed without error'
+  enew!
+  call setline(1, '((inner) middle)')
+  call cursor(1, 3)
+  let tries = 0
+  while tries < 6 && ExpandRegionTestVisualText() !~# 'middle'
+    call feedkeys('+', 'xt')
+    let tries += 1
+  endwhile
+  Assert ExpandRegionTestVisualText() =~# 'middle', 'Should expand to include outer parens content'
 
 Execute (Multiple expansion sequence):
-  normal! Ohello (world [test])
-  normal! 0w
-  call expand_region#next('n', '+')
-  Assert 1 == 1, 'First expansion executed'
-  call expand_region#next('n', '+')
-  Assert 1 == 1, 'Second expansion executed'
+  enew!
+  call setline(1, 'hello (world [test])')
+  call cursor(1, 15)
+  let tries = 0
+  while tries < 6 && ExpandRegionTestVisualText() !~# 'world'
+    call feedkeys('+', 'xt')
+    let tries += 1
+  endwhile
+  Assert ExpandRegionTestVisualText() =~# 'world', 'Should grow region to include outer content'
 
 Execute (Shrink functionality):
-  normal! O"hello world"
-  normal! 0w
-  call expand_region#next('n', '+')
-  Assert 1 == 1, 'Expand executed'
-  call expand_region#next('n', '-')
-  Assert 1 == 1, 'Shrink executed without error'
+  enew!
+  call setline(1, '"hello world"')
+  normal! gg0w
+  call feedkeys('+', 'xt')
+  call feedkeys('+', 'xt')
+  call feedkeys('+', 'xt')
+  Assert ExpandRegionTestVisualText() ==# 'hello world', 'Expand should select inside quotes'
+  call feedkeys('_', 'xt')
+  Assert ExpandRegionTestVisualText() !=# 'hello world', 'Shrink should reduce selection'

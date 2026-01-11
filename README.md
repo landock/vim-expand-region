@@ -21,6 +21,13 @@ Requires Vim 9.0 or later. Install using [Pathogen], [Vundle], [Neobundle], or y
 ## Quick Start
 Press ```+``` to expand the visual selection and ```_``` to shrink it.
 
+## Testing
+Run the Vader.vim test suite:
+
+```sh
+bash test/run
+```
+
 ## Mapping
 Customize the key mapping if you don't like the default.
 
@@ -49,11 +56,11 @@ let g:expand_region_text_objects = {
       \ }
 ```
 
-You can extend the global default dictionary by calling ```expand_region#custom_text_objects```:
+You can extend the global default dictionary by calling ```expand_region#CustomTextObjects```:
 
 ```vim
 " Extend the global default (NOTE: Remove comments in dictionary before sourcing)
-call expand_region#custom_text_objects({
+call expand_region#CustomTextObjects({
       \ "\/\\n\\n\<CR>": 1, " Motions are supported as well. Here's a search motion that finds a blank line
       \ 'a]' :1, " Support nesting of 'around' brackets
       \ 'ab' :1, " Support nesting of 'around' parentheses
@@ -73,11 +80,11 @@ let g:expand_region_text_objects_ruby = {
       \ }
 ```
 
-Note that this completely replaces the default dictionary. To extend the default on a per filetype basis, you can call ```expand_region#custom_text_objects``` by passing in the filetype in the first argument:
+Note that this completely replaces the default dictionary. To extend the default on a per filetype basis, you can call ```expand_region#CustomTextObjects``` by passing in the filetype in the first argument:
 
 ```vim
 " Use the global default + the following for ruby
-call expand_region#custom_text_objects('ruby', {
+call expand_region#CustomTextObjects('ruby', {
       \ 'im' :0,
       \ 'am' :0,
       \ })
@@ -97,4 +104,3 @@ let g:expand_region_use_select_mode = 1
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/terryma/vim-expand-region/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-

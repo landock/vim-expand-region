@@ -73,10 +73,10 @@ continually expanded until the region no longer gets larger. >
 <
 
 You can extend the global default dictionary by calling
-'expand_region#custom_text_objects'. >
+'expand_region#CustomTextObjects'. >
 
     " Extend the global default (NOTE: Remove comments in dictionary before sourcing)
-    call expand_region#custom_text_objects({
+    call expand_region#CustomTextObjects({
           \ "\/\\n\\n\<CR>": 1, " Motions are supported as well. Here's a search motion that finds a blank line
           \ 'a]' :1, " Support nesting of 'around' brackets
           \ 'ab' :1, " Support nesting of 'around' parentheses
@@ -98,11 +98,11 @@ by defining global variables like 'g:expand_region_text_objects_{ft}'. >
 
 Note that this completely replaces the default dictionary. To extend the
 default on a per filetype basis, you can call
-'expand_region#custom_text_objects' by passing in the filetype in the first
+'expand_region#CustomTextObjects' by passing in the filetype in the first
 argument: >
 
     " Use the global default + the following for ruby
-    call expand_region#custom_text_objects('ruby', {
+    call expand_region#CustomTextObjects('ruby', {
           \ 'im' :0,
           \ 'am' :0,
           \ })
