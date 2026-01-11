@@ -6,32 +6,44 @@ Execute (Basic word expansion works):
   normal! Ohello world test
   normal! 0w
   call expand_region#next('n', '+')
-  Assert 1 == 1, 'Expand executed without error'
+  Assert 1, 'Expand executed without error'
 
 Execute (Expand to quotes works):
   normal! O"hello world"
   normal! 0w
   call expand_region#next('n', '+')
-  Assert 1 == 1, 'Expand to quotes executed without error'
+  Assert 1, 'Expand to quotes executed without error'
 
 Execute (Nested parentheses):
   normal! O((inner) middle)
   normal! 0w
   call expand_region#next('n', '+')
-  Assert 1 == 1, 'Nested parens expansion executed without error'
+  Assert 1, 'Nested parens expansion executed without error'
 
 Execute (Multiple expansion sequence):
   normal! Ohello (world [test])
   normal! 0w
   call expand_region#next('n', '+')
-  Assert 1 == 1, 'First expansion executed'
+  Assert 1, 'First expansion executed'
   call expand_region#next('n', '+')
-  Assert 1 == 1, 'Second expansion executed'
+  Assert 1, 'Second expansion executed'
 
 Execute (Shrink functionality):
   normal! O"hello world"
   normal! 0w
   call expand_region#next('n', '+')
-  Assert 1 == 1, 'Expand executed'
+  Assert 1, 'Expand executed'
   call expand_region#next('n', '-')
-  Assert 1 == 1, 'Shrink executed without error'
+  Assert 1, 'Shrink executed without error'
+
+Execute (Shrink after multiple expands returns to previous):
+  normal! O[ [ [test] ] ]
+  normal! 0
+  call expand_region#next('n', '+')
+  call expand_region#next('n', '+')
+  call expand_region#next('n', '+')
+  let pos_at_max = copy(getpos("'<"))
+  call expand_region#next('n', '-')
+  call expand_region#next('n', '-')
+  Assert getpos("'<") !=# pos_at_max, 'Shrunk to previous level'
+

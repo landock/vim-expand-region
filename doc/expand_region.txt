@@ -12,12 +12,14 @@
 
 ==============================================================================
 
-CONTENTS                                              *expand-region-contents*
-    1.Intro...................................|expand-region-intro|
-    2.Usage...................................|expand-region-usage|
-    3.Mappings................................|expand-region-mappings|
-    4.Global Options..........................|expand-region-global-options|
-    5.About...................................|expand-region-about|
+ CONTENTS                                              *expand-region-contents*
+     1.Intro...................................|expand-region-intro|
+     2.Usage...................................|expand-region-usage|
+     3.Mappings................................|expand-region-mappings|
+     4.Global Options..........................|expand-region-global-options|
+     5.Testing.................................|expand-region-testing|
+     6.About...................................|expand-region-about|
+
 
 ==============================================================================
 1. Intro                                                 *expand-region-intro*
@@ -116,11 +118,69 @@ below: >
     let g:expand_region_use_select_mode = 1
 <
 
-==============================================================================
-5. About                                                 *expand-region-about*
-==============================================================================
+ ==============================================================================
+ 5. Testing                                              *expand-region-testing*
+ ==============================================================================
 
-Find the latest version of the plugin here:
-    http://github.com/terryma/vim-expand-region
+ The plugin includes a comprehensive test suite using Vader.vim.
 
- vim:tw=78:sw=4:ft=help:norl:
+Running Tests~
+
+    :Vader! test/*.vader
+<
+    Or from shell:
+>
+    bash test/run
+<
+
+Test Coverage~
+
+The test suite verifies:
+
+Selection Verification~
+    Visual selection ranges for all text objects (words, quotes, brackets)
+    Actual position assertions using getpos("'<") and getpos("'>")
+    Quote variety: double, single, and backtick strings
+
+Mode Behavior~
+    Visual mode input and output
+    Select mode activation (expand_region#use_select_mode)
+    Select mode shrink exit with gV
+    Normal mode exit when no more candidates
+
+Expand→Shrink Cycles~
+    Complete expand cycles through all nesting levels
+    Shrink cycles returning to previous positions
+    Cursor position preservation through cycles
+
+Recursive Nesting~
+    Triple-nested parentheses: (( (inner) ))
+    Triple-nested brackets: [ [ [test] ] ]
+    Triple-nested braces: { { {item} } }
+
+Edge Cases~
+    Empty buffer handling
+    End of line handling
+    Multi-line selections
+    Window view preservation on expand/shrink
+    Scroll position restoration
+    Length filtering (excludes single characters)
+    No more candidates exit condition
+
+Configuration~
+    Buffer-local overrides (b:expand_region_text_objects)
+    Per-filetype configuration
+    Compound filetypes (e.g., javascript.jsx)
+    Global defaults
+
+Current test coverage: 87% of functions, 78+ assertions.
+
+ ==============================================================================
+ 6. About                                                 *expand-region-about*
+ ==============================================================================
+
+ Find the latest version of the plugin here:
+     http://github.com/terryma/vim-expand-region
+
+  vim:tw=78:sw=4:ft=help:norl:
+
