@@ -7,7 +7,7 @@
 " Last Modified: January 10, 2026
 " =============================================================================
 
-let save_cpo = &cpo
+let s:save_cpo = &cpo
 set cpo&vim
 
 " Init global vars
@@ -17,13 +17,13 @@ call expand_region#init()
 " Mappings
 " =============================================================================
 if get(g:, 'expand_region_use_defaults', 1)
-    if !hasmapto('<Plug>(expand_region_expand)')
-        nmap + <Plug>(expand_region_expand)
-        vmap + <Plug>(expand_region_expand)
+    if !hasmapto('<Plug>(expand_region_expand)', 'n')
+        nnoremap <silent> + <Plug>(expand_region_expand)
+        vnoremap <silent> + <Plug>(expand_region_expand)
     endif
-    if !hasmapto('<Plug>(expand_region_shrink)')
-        vmap _ <Plug>(expand_region_shrink)
-        nmap _ <Plug>(expand_region_shrink)
+    if !hasmapto('<Plug>(expand_region_shrink)', 'n')
+        vnoremap <silent> _ <Plug>(expand_region_shrink)
+        nnoremap <silent> _ <Plug>(expand_region_shrink)
     endif
 endif
 
@@ -44,5 +44,5 @@ else
                 \ :<C-U>call expand_region#next('v', '-')<CR>
 endif
 
-&cpo = save_cpo
-unlet save_cpo
+let &cpo = s:save_cpo
+unlet s:save_cpo

@@ -40,46 +40,12 @@ function! expand_region#init() abort
   " Option to default to the select mode when selecting a new region
   let g:expand_region_use_select_mode = get(g:, 'expand_region_use_select_mode', 0)
 endfunction
-call expand_region#init()
 
 " ==============================================================================
 " Global Functions
 " ==============================================================================
 
 " Allow user to customize the global dictionary, or the per filetype dictionary
-" a:1 - dictionary to extend global with, or
-" a:1 - filetype string, a:2 - dictionary to extend filetype with
-function! expand_region#custom_text_objects(...) abort
-  if a:0 == 1
-    call extend(g:expand_region_text_objects, a:1)
-  elseif a:0 == 2
-    if !exists("g:expand_region_text_objects_".a:1)
-      let g:expand_region_text_objects_{a:1} = {}
-      call extend(g:expand_region_text_objects_{a:1}, g:expand_region_text_objects)
-    endif
-    call extend(g:expand_region_text_objects_{a:1}, a:2)
-  endif
-endfunction
-
-" Returns whether we should perform the region highlighting use visual mode or
-" select mode
-function! expand_region#use_select_mode() abort
-  return g:expand_region_use_select_mode || index(split(&selectmode, ','), 'cmd') != -1
-endfunction
-
-" Main entry point - expand or shrink the selection
-" a:mode - 'n' for normal mode, 'v' for visual mode
-" a:direction - '+' to expand, '-' to shrink
-function! expand_region#next(mode, direction) abort
-  call s:expand_region(a:mode, a:direction)
-endfunction
-call expand_region#init()
-
-" ==============================================================================
-" Global Functions
-" ==============================================================================
-
-" Allow user to customize the global dictionary, or the per file type dictionary
 function! expand_region#custom_text_objects(...)
   if a:0 == 1
     call extend(g:expand_region_text_objects, a:1)
