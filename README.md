@@ -23,7 +23,7 @@ This project maintains two branches for Vim version compatibility:
 **Upgrading from Vim 8.x**: The `master` branch has migrated to Vim 9.0+ script. If you're using Vim 8.x, continue using the `legacy-1.x` branch or version `v1.2.0`.
 
 <p align="center">
-  <img src="https://raw.github.com/terryma/vim-expand-region/master/expand-region.gif" alt="vim-expand-region" />
+  <img src="https://raw.github.com/landock/vim-expand-region/master/expand-region.gif" alt="vim-expand-region" />
 </p>
 
 ## Installation
@@ -108,10 +108,10 @@ By default, after an expansion, the plugin leaves you in visual mode. If your ``
 let g:expand_region_use_select_mode = 1
 ```
 
-[vim-expand-region]:http://github.com/terryma/vim-expand-region
+[vim-expand-region]:http://github.com/landock/vim-expand-region
 [Pathogen]:http://github.com/tpope/vim-pathogen
 [Vundle]:http://github.com/gmarik/vundle
 [Neobundle]:http://github.com/Shougo/neobundle.vim
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/terryma/vim-expand-region/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/landock/vim-expand-region/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
