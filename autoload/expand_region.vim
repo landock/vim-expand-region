@@ -72,7 +72,7 @@ endfunction
 " ==============================================================================
 
 " The saved cursor position when user initiates expand. This is the position we
-" use to calcuate the region for all of our text objects. This is also used to
+" use to calculate the region for all of our text objects. This is also used to
 " restore the original cursor position when the region is completely shrinked.
 let s:saved_pos = []
 
@@ -255,7 +255,7 @@ endfunction
 " the middle of an expand/shrink.
 function! s:should_compute_candidates(mode)
   if a:mode ==# 'v'
-    " Check that current visual selection is idential to our last expanded
+    " Check that current visual selection is identical to our last expanded
     " region
     if s:cur_index >= 0
       let selection = s:get_visual_selection()
