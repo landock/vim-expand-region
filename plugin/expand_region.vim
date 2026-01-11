@@ -1,14 +1,13 @@
-vim9script
-# =============================================================================
-# File: expand_region.vim
-# Author: Terry Ma
-# Forked By: Mike Easley
-# Description: Incrementally select larger regions of text in visual mode by
-# repeating the same key combination
-# Last Modified: January 21, 2014
-# =============================================================================
+" =============================================================================
+" File: expand_region.vim
+" Author: Terry Ma
+" Forked By: Mike Easley
+" Description: Incrementally select larger regions of text in visual mode by
+" repeating the same key combination
+" Last Modified: January 21, 2014
+" =============================================================================
 
-var save_cpo = &cpo
+let save_cpo = &cpo
 set cpo&vim
 
 # Init global vars
@@ -45,3 +44,4 @@ else
 endif
 
 &cpo = save_cpo
+unlet save_cpo
