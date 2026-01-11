@@ -180,7 +180,7 @@ Current test coverage: 87% of functions, 78+ assertions.
  ==============================================================================
 
  Find the latest version of the plugin here:
-     http://github.com/terryma/vim-expand-region
+     http://github.com/landock/vim-expand-region
 
   vim:tw=78:sw=4:ft=help:norl:
 

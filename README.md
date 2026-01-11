@@ -86,7 +86,7 @@ By default, after an expansion, the plugin leaves you in visual mode. If your ``
 let g:expand_region_use_select_mode = 1
 ```
 
-[vim-expand-region]:http://github.com/terryma/vim-expand-region
+[vim-expand-region]:http://github.com/landock/vim-expand-region
 [Pathogen]:http://github.com/tpope/vim-pathogen
 [Vundle]:http://github.com/gmarik/vundle
 [Neobundle]:http://github.com/Shougo/neobundle.vim
