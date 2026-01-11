@@ -11,6 +11,17 @@
 - Vim 9.0 or later
 - Vader.vim for testing (optional)
 
+## Version Compatibility
+
+This project maintains two branches for Vim version compatibility:
+
+| Branch/Tag | Vim Version | Status |
+|------------|-------------|--------|
+| `master` | Vim 9.0+ | Active development |
+| `legacy-1.x` / `v1.2.0` | Vim 8.x | Bug fixes only |
+
+**Upgrading from Vim 8.x**: The `master` branch has migrated to Vim 9.0+ script. If you're using Vim 8.x, continue using the `legacy-1.x` branch or version `v1.2.0`.
+
 <p align="center">
   <img src="https://raw.github.com/terryma/vim-expand-region/master/expand-region.gif" alt="vim-expand-region" />
 </p>
