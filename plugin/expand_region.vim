@@ -4,18 +4,18 @@
 " Forked By: Mike Easley
 " Description: Incrementally select larger regions of text in visual mode by
 " repeating the same key combination
-" Last Modified: January 21, 2014
+" Last Modified: January 10, 2026
 " =============================================================================
 
 let save_cpo = &cpo
 set cpo&vim
 
-# Init global vars
-expand_region#init()
+" Init global vars
+call expand_region#init()
 
-# =============================================================================
-# Mappings
-# =============================================================================
+" =============================================================================
+" Mappings
+" =============================================================================
 if get(g:, 'expand_region_use_defaults', 1)
     if !hasmapto('<Plug>(expand_region_expand)')
         nmap + <Plug>(expand_region_expand)
@@ -24,13 +24,14 @@ if get(g:, 'expand_region_use_defaults', 1)
     if !hasmapto('<Plug>(expand_region_shrink)')
         vmap _ <Plug>(expand_region_shrink)
         nmap _ <Plug>(expand_region_shrink)
-
     endif
 endif
 
 nnoremap <silent> <Plug>(expand_region_expand)
             \ :<C-U>call expand_region#next('n', '+')<CR>
-# Map keys differently depending on which mode is desired
+nnoremap <silent> <Plug>(expand_region_shrink)
+            \ :<C-U>call expand_region#next('v', '-')<CR>
+" Map keys differently depending on which mode is desired
 if expand_region#use_select_mode()
     snoremap <silent> <Plug>(expand_region_expand)
                 \ :<C-U>call expand_region#next('v', '+')<CR>
