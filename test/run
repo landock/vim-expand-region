@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Print debugging information
+echo "Current directory: $(pwd)"
+echo "Vim version:"
+vim --version
+echo "Vader.vim present: $(test -d vader.vim && echo "Yes" || echo "No")"
+echo "Test files:"
+ls test/*.vader
+
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root_dir"
 
@@ -8,4 +16,5 @@ if [[ ! -d "vader.vim" ]]; then
   git clone --depth 1 https://github.com/junegunn/vader.vim.git vader.vim
 fi
 
-vim -Es -Nu test/vimrc -c 'Vader! test/*.vader' -c 'qa!'
+# Use verbose flag to get more information
+vim -Es -Nu test/vimrc -c 'set verbose=1' -c 'Vader! test/*.vader' -c 'qa!'
