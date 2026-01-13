@@ -16,5 +16,9 @@ if [[ ! -d "vader.vim" ]]; then
   git clone --depth 1 https://github.com/junegunn/vader.vim.git vader.vim
 fi
 
-# Use verbose flag to get more information
-vim -Es -Nu test/vimrc -c 'set verbose=1' -c 'Vader! test/*.vader' -c 'qa!'
+# Verbose mode to capture full test output
+vim -Es -Nu test/vimrc -c 'set verbose=1' -c 'Vader! test/*.vader' -V20vaderlog.txt -c 'qa!'
+
+# Output the log file contents
+echo "Vader Log Contents:"
+cat vaderlog.txt
