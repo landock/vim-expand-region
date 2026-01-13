@@ -1,13 +1,18 @@
-name: Test (Legacy)
+name: Test
 
 on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        vim_version: ['v8.2.0000', 'stable']
+
     steps:
       - uses: actions/checkout@v4
       - uses: rhysd/action-setup-vim@v1
         with:
-          version: v8.2.0000
-      - run: vim -Es -Nu test/vimrc -c 'Vader! test/*.vader'
+          version: ${{ matrix.vim_version }}
+      - run: bash test/run
