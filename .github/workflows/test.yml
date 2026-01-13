@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        vim_version: ['v9.0.0000', 'v9.1.0000', 'stable']
+        vim_version: ['v8.2.0000', 'stable']
 
     steps:
       - uses: actions/checkout@v4
