@@ -60,11 +60,6 @@ export def Next(mode: string, direction: string): void
   ExpandRegion(mode, direction)
 enddef
 
-# Legacy wrapper for backward compatibility with legacy Vimscript tests
-export def Next_legacy(mode: string, direction: string): void
-  Next(mode, direction)
-enddef
-
 expand_region#Init()
 
 # =============================================================================
@@ -121,7 +116,6 @@ def GetCandidateDict(text_object: string): dict<any>
     if start_idx < 1 || end_idx > len(line) || line[start_idx - 1] !=# "'" || line[end_idx - 1] !=# "'"
       ret.length = 0
     endif
-  endif
   endif
   winrestview(winview)
   return ret
