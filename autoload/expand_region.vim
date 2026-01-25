@@ -35,12 +35,12 @@ enddef
 
 export def CustomTextObjects(arg1: any, arg2: any = v:null): void
   if arg2 == v:null
-    call extend(g:expand_region_text_objects, arg1)
+    extend(g:expand_region_text_objects, arg1)
     return
   endif
-  var ft = arg1
+  var filetype = arg1
   var dict_value = arg2
-  var ft_key = 'expand_region_text_objects_' .. ft
+  var ft_key = 'expand_region_text_objects_' .. filetype
   var ft_dict = {}
   if !has_key(g:, ft_key)
     call extend(g:, { [ft_key]: {} })
@@ -49,7 +49,7 @@ export def CustomTextObjects(arg1: any, arg2: any = v:null): void
   else
     ft_dict = get(g:, ft_key)
   endif
-  extend(ft_dict, dict_value)
+  call extend(ft_dict, dict_value)
 enddef
 
 export def UseSelectMode(): bool
@@ -107,13 +107,16 @@ def GetCandidateDict(text_object: string): dict<any>
         \ 'end_pos': selection.end_pos,
         \ 'length': selection.length
         \}
+  # Validate i' text object - Vim may select content outside quotes in some cases
+  # This check ensures the selection is actually bounded by single quotes
   if text_object == "i'" && ret.length > 0
     var line = getline(ret.start_pos[1])
     var start_idx = ret.start_pos[2] - 1
     var end_idx = ret.end_pos[2]
-    if start_idx < 1 || end_idx > len(line) || line[start_idx - 1] != "'" || line[end_idx - 1] != "'"
+    if start_idx < 1 || end_idx > len(line) || line[start_idx - 1] !=# "'" || line[end_idx - 1] !=# "'"
       ret.length = 0
     endif
+  endif
   endif
   winrestview(winview)
   return ret
@@ -155,8 +158,8 @@ def GetCandidateList(): list<any>
     var repeat_count = 2
     var previous_length = candidate.length
     while 1
-      var test = repeat(candidate.text_object, repeat_count)
-      var next_candidate = GetCandidateDict(test)
+      var repeated_obj = repeat(candidate.text_object, repeat_count)
+      var next_candidate = GetCandidateDict(repeated_obj)
       if next_candidate.length == 0
         break
       endif
@@ -281,7 +284,7 @@ def ExpandRegion(mode: string, direction: string): void
     call setpos('.', saved_pos)
   endif
   if direction == '+'
-    if cur_index == len(candidates) - 1
+    if empty(candidates) || cur_index == len(candidates) - 1
       normal! \<Esc>
     else
       cur_index += 1
