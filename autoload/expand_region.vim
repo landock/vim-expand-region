@@ -234,7 +234,7 @@ def ShouldComputeCandidates(mode: string): bool
   return true
 enddef
 
-def ComputeCandidates(cursor_pos: list<number>)
+def ComputeCandidates(cursor_pos: list<number>): void
   cur_index = -1
   saved_pos = cursor_pos
   candidates = GetCandidateList()
