@@ -34,7 +34,7 @@ export def Init(): void
 enddef
 
 export def CustomTextObjects(arg1: any, arg2: any = v:null): void
-  if arg2 ==# v:null
+  if arg2 == v:null
     call extend(g:expand_region_text_objects, arg1)
     return
   endif
@@ -71,7 +71,7 @@ def SortTextObject(l: any, r: any): number
 enddef
 
 def ComparePos(l: list<number>, r: list<number>): number
-  return l[1] ==# r[1] ? l[2] - r[2] : l[1] - r[1]
+  return l[1] == r[1] ? l[2] - r[2] : l[1] - r[1]
 enddef
 
 def IsCursorInside(pos: list<number>, region: dict<any>): bool
@@ -87,8 +87,8 @@ enddef
 def RemoveDuplicate(input: any): void
   var idx = len(input) - 1
   while idx >= 1
-    if input[idx].length ==# input[idx - 1].length &&
-          \ input[idx].start_pos ==# input[idx - 1].start_pos
+    if input[idx].length == input[idx - 1].length &&
+          \ input[idx].start_pos == input[idx - 1].start_pos
       call remove(input, idx)
     endif
     idx -= 1
@@ -107,11 +107,11 @@ def GetCandidateDict(text_object: string): dict<any>
         \ 'end_pos': selection.end_pos,
         \ 'length': selection.length
         \}
-  if text_object ==# "i'" && ret.length > 0
+  if text_object == "i'" && ret.length > 0
     var line = getline(ret.start_pos[1])
     var start_idx = ret.start_pos[2] - 1
     var end_idx = ret.end_pos[2]
-    if start_idx < 1 || end_idx > len(line) || line[start_idx - 1] !=# "'" || line[end_idx - 1] !=# "'"
+    if start_idx < 1 || end_idx > len(line) || line[start_idx - 1] != "'" || line[end_idx - 1] != "'"
       ret.length = 0
     endif
   endif
@@ -149,7 +149,7 @@ def GetCandidateList(): list<any>
     if !get(config, candidate.text_object, 0)
       continue
     endif
-    if candidate.length ==# 0
+    if candidate.length == 0
       continue
     endif
     var repeat_count = 2
@@ -157,10 +157,10 @@ def GetCandidateList(): list<any>
     while 1
       var test = repeat(candidate.text_object, repeat_count)
       var next_candidate = GetCandidateDict(test)
-      if next_candidate.length ==# 0
+      if next_candidate.length == 0
         break
       endif
-      if next_candidate.length ==# previous_length
+      if next_candidate.length == previous_length
         break
       endif
       call add(recursive_candidates, next_candidate)
@@ -175,14 +175,14 @@ enddef
 def GetVisualSelection(): dict<any>
   var start_pos = getpos("'<")
   var end_pos = getpos("'>")
-  if start_pos[1] ==# 0 || end_pos[1] ==# 0
+  if start_pos[1] == 0 || end_pos[1] == 0
     return {
           \ 'start_pos': start_pos,
           \ 'end_pos': end_pos,
           \ 'length': 0
           \}
   endif
-  if ComparePos(start_pos, end_pos) ==# 0
+  if ComparePos(start_pos, end_pos) == 0
     return {
           \ 'start_pos': start_pos,
           \ 'end_pos': end_pos,
@@ -196,7 +196,7 @@ def GetVisualSelection(): dict<any>
   endif
   var [lnum1, col1] = start_pos[1 : 2]
   var [lnum2, col2] = end_pos[1 : 2]
-  if lnum1 <=# 0 || lnum2 <=# 0 || col1 <=# 0 || col2 <=# 0
+  if lnum1 <= 0 || lnum2 <= 0 || col1 <= 0 || col2 <= 0
     return {
           \ 'start_pos': start_pos,
           \ 'end_pos': end_pos,
@@ -222,11 +222,11 @@ def GetVisualSelection(): dict<any>
 enddef
 
 def ShouldComputeCandidates(mode: string): bool
-  if mode ==# 'v'
+  if mode == 'v'
     if cur_index >= 0
       var selection = GetVisualSelection()
-      if candidates[cur_index].start_pos ==# selection.start_pos &&
-            \ candidates[cur_index].length ==# selection.length
+      if candidates[cur_index].start_pos == selection.start_pos &&
+            \ candidates[cur_index].length == selection.length
         return 0
       endif
     endif
@@ -255,20 +255,20 @@ def ExpandRegion(mode: string, direction: string): void
   var saved_selectmode = &selectmode
   &selectmode = ''
   var selection = {}
-  if mode ==# 'v'
+  if mode == 'v'
     selection = GetVisualSelection()
   endif
   if ShouldComputeCandidates(mode)
-    if mode ==# 'v' && cur_index >= 0
+    if mode == 'v' && cur_index >= 0
       ComputeCandidates(saved_pos)
     else
       ComputeCandidates(getpos('.'))
     endif
-    if mode ==# 'v' && get(selection, 'length', 0) > 0
+    if mode == 'v' && get(selection, 'length', 0) > 0
       var found = -1
       for idx in range(0, len(candidates) - 1)
-        if candidates[idx].start_pos ==# selection.start_pos &&
-              \ candidates[idx].length ==# selection.length
+        if candidates[idx].start_pos == selection.start_pos &&
+              \ candidates[idx].length == selection.length
           found = idx
           break
         endif
@@ -280,8 +280,8 @@ def ExpandRegion(mode: string, direction: string): void
   else
     call setpos('.', saved_pos)
   endif
-  if direction ==# '+'
-    if cur_index ==# len(candidates) - 1
+  if direction == '+'
+    if cur_index == len(candidates) - 1
       exec "normal! \<Esc>"
     else
       cur_index += 1
@@ -289,7 +289,7 @@ def ExpandRegion(mode: string, direction: string): void
       call SelectRegion()
     endif
   else
-    if cur_index <=# 0
+    if cur_index <= 0
       if expand_region#UseSelectMode()
         exec "normal! gV"
       endif
