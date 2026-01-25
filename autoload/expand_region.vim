@@ -76,12 +76,12 @@ enddef
 
 def IsCursorInside(pos: list<number>, region: dict<any>): bool
   if ComparePos(pos, region.start_pos) < 0
-    return 0
+    return false
   endif
   if ComparePos(pos, region.end_pos) > 0
-    return 0
+    return false
   endif
-  return 1
+  return true
 enddef
 
 def RemoveDuplicate(input: any): void
@@ -227,11 +227,11 @@ def ShouldComputeCandidates(mode: string): bool
       var selection = GetVisualSelection()
       if candidates[cur_index].start_pos == selection.start_pos &&
             \ candidates[cur_index].length == selection.length
-        return 0
+        return false
       endif
     endif
   endif
-  return 1
+  return true
 enddef
 
 def ComputeCandidates(cursor_pos: list<number>)
