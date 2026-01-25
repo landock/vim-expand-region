@@ -1,0 +1,130 @@
+Before:
+  unlet! b:expand_region_text_objects
+  let g:expand_region_use_defaults = 1
+  unlet! g:expand_region_init
+  runtime plugin/expand_region.vim
+
+  " Reuse existing helper from expand_region.vader
+  function! ExpandRegionTestVisualText() abort
+    let start_pos = getpos('v')
+    let end_pos = getpos('.')
+    if start_pos[1] ==# 0 || end_pos[1] ==# 0 || start_pos ==# end_pos
+      let start_pos = getpos("'<")
+      let end_pos = getpos("'>")
+    endif
+    if start_pos[1] ==# 0 || end_pos[1] ==# 0
+      return ''
+    endif
+    if start_pos[1] > end_pos[1] || (start_pos[1] ==# end_pos[1] && start_pos[2] > end_pos[2])
+      let tmp = start_pos
+      let start_pos = end_pos
+      let end_pos = tmp
+    endif
+    if start_pos[1] !=# end_pos[1]
+      return ''
+    endif
+    let line = getline(start_pos[1])
+    return strpart(line, start_pos[2] - 1, end_pos[2] - start_pos[2] + 1)
+  endfunction
+
+Execute (Single quote i' text object):
+  enew!
+  call setline(1, "say 'hello' please")
+  call cursor(1, 7)
+  let tries = 0
+  while tries < 5 && ExpandRegionTestVisualText() !=# 'hello'
+    call feedkeys('+', 'xt')
+    let tries += 1
+  endwhile
+  Assert ExpandRegionTestVisualText() ==# 'hello', 'Should select inside single quotes'
+
+Execute (Double quote i" text object):
+  enew!
+  call setline(1, 'say "hello" please')
+  call cursor(1, 7)
+  let tries = 0
+  while tries < 5 && ExpandRegionTestVisualText() !=# 'hello'
+    call feedkeys('+', 'xt')
+    let tries += 1
+  endwhile
+  Assert ExpandRegionTestVisualText() ==# 'hello', 'Should select inside double quotes'
+
+Execute (Square brackets i] recursive):
+  enew!
+  call setline(1, 'arr[[inner] outer]')
+  call cursor(1, 6)
+  let found_inner = 0
+  let found_outer = 0
+  let tries = 0
+  while tries < 8
+    call feedkeys('+', 'xt')
+    let sel = ExpandRegionTestVisualText()
+    if sel =~# 'inner' && sel !~# 'outer'
+      let found_inner = 1
+    endif
+    if sel =~# 'outer'
+      let found_outer = 1
+    endif
+    let tries += 1
+  endwhile
+  Assert found_inner, 'Should find inner brackets first'
+  Assert found_outer, 'Should expand to outer brackets'
+
+Execute (Parentheses ib recursive):
+  enew!
+  call setline(1, 'fn((inner) outer)')
+  call cursor(1, 5)
+  let found_outer = 0
+  let tries = 0
+  while tries < 8
+    call feedkeys('+', 'xt')
+    if ExpandRegionTestVisualText() =~# 'outer'
+      let found_outer = 1
+      break
+    endif
+    let tries += 1
+  endwhile
+  Assert found_outer, 'Should expand through nested parentheses'
+
+Execute (Braces iB recursive):
+  enew!
+  call setline(1, 'obj{{inner} outer}')
+  call cursor(1, 5)
+  let found_outer = 0
+  let tries = 0
+  while tries < 8
+    call feedkeys('+', 'xt')
+    if ExpandRegionTestVisualText() =~# 'outer'
+      let found_outer = 1
+      break
+    endif
+    let tries += 1
+  endwhile
+  Assert found_outer, 'Should expand through nested braces'
+
+Execute (Mixed nested structures):
+  enew!
+  call setline(1, '([{deep}])')
+  call cursor(1, 4)
+  let reached_outer = 0
+  let tries = 0
+  while tries < 10
+    call feedkeys('+', 'xt')
+    let sel = ExpandRegionTestVisualText()
+    if sel =~# '^\[' || sel =~# '^('
+      let reached_outer = 1
+    endif
+    let tries += 1
+  endwhile
+  Assert reached_outer, 'Should expand through mixed nesting'
+
+Execute (Adjacent quotes do not interfere):
+  enew!
+  call setline(1, '"first" "second"')
+  call cursor(1, 3)
+  let tries = 0
+  while tries < 4 && ExpandRegionTestVisualText() !=# 'first'
+    call feedkeys('+', 'xt')
+    let tries += 1
+  endwhile
+  Assert ExpandRegionTestVisualText() ==# 'first', 'Should select correct quote pair'
