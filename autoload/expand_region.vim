@@ -97,9 +97,9 @@ enddef
 
 def GetCandidateDict(text_object: string): dict<any>
   var winview = winsaveview()
-  silent! exec 'normal! v'
-  silent! exec 'silent! normal ' .. text_object
-  silent! exec "normal! \<Esc>"
+  silent! normal! v
+  execute 'silent! normal ' .. text_object
+  silent! normal! \<Esc>
   var selection = GetVisualSelection()
   var ret = {
         \ 'text_object': text_object,
@@ -244,10 +244,10 @@ def ComputeCandidates(cursor_pos: list<number>)
 enddef
 
 def SelectRegion(): void
-  exec 'normal! v'
-  exec 'normal ' .. candidates[cur_index].text_object
+  normal! v
+  execute 'normal! ' .. candidates[cur_index].text_object
   if expand_region#UseSelectMode()
-    exec "normal! \<C-g>"
+    normal! \<C-g>
   endif
 enddef
 
@@ -282,7 +282,7 @@ def ExpandRegion(mode: string, direction: string): void
   endif
   if direction == '+'
     if cur_index == len(candidates) - 1
-      exec "normal! \<Esc>"
+      normal! \<Esc>
     else
       cur_index += 1
       candidates[cur_index].prev_winview = winsaveview()
@@ -291,7 +291,7 @@ def ExpandRegion(mode: string, direction: string): void
   else
     if cur_index <= 0
       if expand_region#UseSelectMode()
-        exec "normal! gV"
+        normal! gV
       endif
     else
       call winrestview(candidates[cur_index].prev_winview)
