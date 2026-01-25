@@ -1,0 +1,101 @@
+Before:
+  unlet! b:expand_region_text_objects
+  let g:expand_region_use_defaults = 1
+  unlet! g:expand_region_init
+  runtime plugin/expand_region.vim
+
+  " Reuse existing helper from expand_region.vader
+  function! ExpandRegionTestVisualText() abort
+    let start_pos = getpos('v')
+    let end_pos = getpos('.')
+    if start_pos[1] ==# 0 || end_pos[1] ==# 0 || start_pos ==# end_pos
+      let start_pos = getpos("'<")
+      let end_pos = getpos("'>")
+    endif
+    if start_pos[1] ==# 0 || end_pos[1] ==# 0
+      return ''
+    endif
+    if start_pos[1] > end_pos[1] || (start_pos[1] ==# end_pos[1] && start_pos[2] > end_pos[2])
+      let tmp = start_pos
+      let start_pos = end_pos
+      let end_pos = tmp
+    endif
+    if start_pos[1] !=# end_pos[1]
+      return ''
+    endif
+    let line = getline(start_pos[1])
+    return strpart(line, start_pos[2] - 1, end_pos[2] - start_pos[2] + 1)
+  endfunction
+
+Execute (Empty file does not crash):
+  enew!
+  call feedkeys('+', 'xt')
+  Assert 1, 'Should not crash on empty file'
+
+Execute (Single character):
+  enew!
+  call setline(1, 'x')
+  normal! gg0
+  call feedkeys('+', 'xt')
+  Assert 1, 'Should handle single character'
+
+Execute (Cursor at line start):
+  enew!
+  call setline(1, 'hello world')
+  normal! gg0
+  call feedkeys('+', 'xt')
+  Assert ExpandRegionTestVisualText() ==# 'hello', 'Should expand from line start'
+
+Execute (Cursor at line end):
+  enew!
+  call setline(1, 'hello world')
+  normal! gg$
+  call feedkeys('+', 'xt')
+  Assert ExpandRegionTestVisualText() ==# 'world', 'Should expand from line end'
+
+Execute (Unmatched opening bracket):
+  enew!
+  call setline(1, 'hello (world')
+  call cursor(1, 8)
+  call feedkeys('+', 'xt')
+  Assert 1, 'Should not crash with unmatched bracket'
+
+Execute (Deeply nested):
+  enew!
+  call setline(1, '(((((deep)))))')
+  call cursor(1, 6)
+  let tries = 0
+  while tries < 10
+    call feedkeys('+', 'xt')
+    let tries += 1
+  endwhile
+  Assert 1, 'Should handle deep nesting'
+
+Execute (Multi-line content):
+  enew!
+  call setline(1, ['first line', 'second line', '', 'new paragraph'])
+  normal! gg0
+  let tries = 0
+  while tries < 6
+    call feedkeys('+', 'xt')
+    let tries += 1
+  endwhile
+  Assert 1, 'Should handle multi-line content'
+
+Execute (Maximum expansion then shrink to start):
+  enew!
+  call setline(1, '(hello world)')
+  call cursor(1, 3)
+  " Expand to max
+  let tries = 0
+  while tries < 10
+    call feedkeys('+', 'xt')
+    let tries += 1
+  endwhile
+  " Shrink back
+  let tries = 0
+  while tries < 10
+    call feedkeys('_', 'xt')
+    let tries += 1
+  endwhile
+  Assert 1, 'Should handle full cycle'

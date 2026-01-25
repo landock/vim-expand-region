@@ -1,0 +1,31 @@
+Before:
+  unlet! b:expand_region_text_objects
+  unlet! g:expand_region_text_objects_custom
+  unlet! g:expand_region_text_objects_ft
+  let g:expand_region_use_defaults = 0
+
+Execute (Buffer-local config overrides global):
+  let b:expand_region_text_objects = {'iw': 0}
+  Assert exists('b:expand_region_text_objects'), 'Buffer-local should exist'
+  Assert b:expand_region_text_objects['iw'] == 0, 'Should use buffer-local config'
+
+Execute (Filetype config is loaded):
+  let g:expand_region_text_objects_python = {'iw': 0, 'if': 1}
+  set filetype=python
+  runtime plugin/expand_region.vim
+  Assert 1, 'Should load filetype config'
+
+Execute (Compound filetype handling):
+  set filetype=python.django
+  call feedkeys('+', 'xt')
+  Assert 1, 'Should handle compound filetypes'
+
+Execute (CustomTextObjects API extends global):
+  call expand_region#CustomTextObjects({'ax': 1})
+  Assert has_key(g:expand_region_text_objects, 'ax'), 'Should add to global'
+  Assert g:expand_region_text_objects['ax'] == 1, 'Recursive flag should be set'
+
+Execute (CustomTextObjects API for filetype):
+  call expand_region#CustomTextObjects('ruby', {'im': 0})
+  Assert has_key(g:expand_region_text_objects_ruby, 'im'), 'Should create ft dict'
+  Assert has_key(g:expand_region_text_objects_ruby, 'iw'), 'Should inherit global objects'
