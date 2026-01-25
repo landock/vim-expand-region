@@ -60,6 +60,11 @@ export def Next(mode: string, direction: string): void
   ExpandRegion(mode, direction)
 enddef
 
+# Legacy wrapper for backward compatibility with legacy Vimscript tests
+export def Next_legacy(mode: string, direction: string): void
+  Next(mode, direction)
+enddef
+
 expand_region#Init()
 
 # =============================================================================
@@ -241,8 +246,8 @@ def ComputeCandidates(cursor_pos: list<number>): void
   cur_index = -1
   saved_pos = cursor_pos
   candidates = GetCandidateList()
-  filter(sort(candidates, SortTextObject), (_, v) => v.length > 1)
-  filter(candidates, (_, v) => IsCursorInside(saved_pos, v))
+  filter(sort(candidates, 'SortTextObject'), 'v:val.length > 1')
+  filter(candidates, 'IsCursorInside(saved_pos, v:val)')
   RemoveDuplicate(candidates)
 enddef
 
