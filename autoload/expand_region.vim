@@ -19,16 +19,16 @@ export def Init(): void
 
   g:expand_region_init = 1
   g:expand_region_text_objects = get(g:, 'expand_region_text_objects', {
-        \ 'iw': 0,
-        \ 'iW': 0,
-        \ 'i"': 0,
-        \ "i'''": 0,
-        \ 'i]': 1,
-        \ 'ib': 1,
-        \ 'iB': 1,
-        \ 'il': 0,
-        \ 'ip': 0,
-        \ 'ie': 0
+        \ "iw": 0,
+        \ "iW": 0,
+        \ "i\"": 0,
+        \ "i'": 0,
+        \ "i]": 1,
+        \ "ib": 1,
+        \ "iB": 1,
+        \ "il": 0,
+        \ "ip": 0,
+        \ "ie": 0
         \})
   g:expand_region_use_select_mode = get(g:, 'expand_region_use_select_mode', 0)
 enddef
@@ -107,7 +107,7 @@ def GetCandidateDict(text_object: string): dict<any>
         \ 'end_pos': selection.end_pos,
         \ 'length': selection.length
         \}
-  if text_object ==# "i'''" && ret.length > 0
+  if text_object ==# "i'" && ret.length > 0
     var line = getline(ret.start_pos[1])
     var start_idx = ret.start_pos[2] - 1
     var end_idx = ret.end_pos[2]
