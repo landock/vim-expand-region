@@ -49,7 +49,7 @@ export def CustomTextObjects(arg1: any, arg2: any = v:null): void
   else
     ft_dict = get(g:, ft_key)
   endif
-  call extend(ft_dict, dict_value)
+  extend(ft_dict, dict_value)
 enddef
 
 export def UseSelectMode(): bool
@@ -115,7 +115,7 @@ def GetCandidateDict(text_object: string): dict<any>
       ret.length = 0
     endif
   endif
-  call winrestview(winview)
+  winrestview(winview)
   return ret
 enddef
 
@@ -238,9 +238,9 @@ def ComputeCandidates(cursor_pos: list<number>)
   cur_index = -1
   saved_pos = cursor_pos
   candidates = GetCandidateList()
-  call filter(sort(candidates, 'SortTextObject'), 'v:val.length > 1')
-  call filter(candidates, 'IsCursorInside(saved_pos, v:val)')
-  call RemoveDuplicate(candidates)
+  filter(sort(candidates, 'SortTextObject'), 'v:val.length > 1')
+  filter(candidates, 'IsCursorInside(saved_pos, v:val)')
+  RemoveDuplicate(candidates)
 enddef
 
 def SelectRegion(): void
