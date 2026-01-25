@@ -2,7 +2,7 @@ vim9script
 # =============================================================================
 # File: expand_region.vim
 # Author: Terry Ma
-# Last Modified: March 30, 2013 (original); migrated 2026
+# Last Modified: March 30, 2013 (original); migrated January 2026
 # =============================================================================
 
 var save_cpo = &cpo

@@ -5,7 +5,7 @@ vim9script
 # Forked By: Mike Easley
 # Description: Incrementally select larger regions of text in visual mode by
 # repeating the same key combination
-# Last Modified: January 21, 2014
+# Last Modified: January 25, 2026
 # =============================================================================
 
 var save_cpo = &cpo

@@ -39,7 +39,7 @@ http://stackoverflow.com/questions/4264047/intellij-ctrlw-equivalent-shortcut-in
 Press '+' to expand the visual selection and '_' to shrink it.
 
 ==============================================================================
-2. Mappings                                           *expand-region-mappings*
+3. Mappings                                           *expand_region-mappings*
 
 Customize the key mappings if you don't like the default. >
 
@@ -123,6 +123,6 @@ below: >
 ==============================================================================
 
 Find the latest version of the plugin here:
-    http://github.com/landock/vim-expand-region
+    https://github.com/landock/vim-expand-region
 
  vim:tw=78:sw=4:ft=help:norl:
