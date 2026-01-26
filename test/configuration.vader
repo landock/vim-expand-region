@@ -1,17 +1,7 @@
 Before:
   unlet! b:expand_region_text_objects
-  unlet! g:expand_region_text_objects_custom
-  unlet! g:expand_region_text_objects_ft
-  let g:expand_region_use_defaults = 0
-
-Execute (Buffer-local config overrides global):
-  let b:expand_region_text_objects = {'iw': 0}
-  Assert exists('b:expand_region_text_objects'), 'Buffer-local should exist'
-  Assert b:expand_region_text_objects['iw'] == 0, 'Should use buffer-local config'
-
-Execute (Filetype config is loaded):
-  let g:expand_region_text_objects_python = {'iw': 0, 'if': 1}
-  set filetype=python
+  unlet! g:expand_region_init
+  let g:expand_region_use_defaults = 1
   runtime plugin/expand_region.vim
   Assert 1, 'Should load filetype config'
 

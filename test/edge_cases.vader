@@ -1,7 +1,7 @@
 Before:
   unlet! b:expand_region_text_objects
-  let g:expand_region_use_defaults = 1
   unlet! g:expand_region_init
+  let g:expand_region_use_defaults = 1
   runtime plugin/expand_region.vim
 
   " Reuse existing helper from expand_region.vader

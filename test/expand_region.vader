@@ -1,5 +1,6 @@
 Before:
   unlet! b:expand_region_text_objects
+  unlet! g:expand_region_init
   let g:expand_region_use_defaults = 1
   runtime plugin/expand_region.vim
 

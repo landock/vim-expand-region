@@ -1,0 +1,10 @@
+Execute (Debug basic expansion):
+  enew!
+  call setline(1, 'hello world test')
+  normal! gg0w
+  echom "Cursor at: " . col('.')
+  call feedkeys('+', 'xt')
+  echom "After expand, mode: " . mode()
+  echom "Visual start: " . string(getpos("'<"))
+  echom "Visual end: " . string(getpos("'>"))
+  echom "Cursor: " . string(getpos('.'))
