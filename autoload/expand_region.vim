@@ -156,7 +156,9 @@ def GetCandidateList(): list<any>
     endif
     var repeat_count = 2
     var previous_length = candidate.length
-    while 1
+    var max_iterations = 10
+    var iteration = 0
+    while iteration < max_iterations
       var repeated_obj = repeat(candidate.text_object, repeat_count)
       var next_candidate = GetCandidateDict(repeated_obj)
       if next_candidate.length == 0
@@ -168,6 +170,7 @@ def GetCandidateList(): list<any>
       call add(recursive_candidates, next_candidate)
       repeat_count += 1
       previous_length = next_candidate.length
+      iteration += 1
     endwhile
   endfor
   &wrapscan = save_wrapscan
