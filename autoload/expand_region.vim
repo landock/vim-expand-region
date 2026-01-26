@@ -46,7 +46,7 @@ endfunction
 " ==============================================================================
 
 " Allow user to customize the global dictionary, or the per filetype dictionary
-function! expand_region#custom_text_objects(...)
+function! expand_region#custom_text_objects(...) abort
   if a:0 == 1
     call extend(g:expand_region_text_objects, a:1)
   elseif a:0 == 2
@@ -65,7 +65,7 @@ function! expand_region#use_select_mode()
 endfunction
 
 " Main function
-function! expand_region#next(mode, direction)
+function! expand_region#next(mode, direction) abort
   call s:expand_region(a:mode, a:direction)
 endfunction
 
@@ -144,11 +144,8 @@ function! s:get_candidate_dict(text_object) abort
   " Store the current view so we can restore it at the end
   let winview = winsaveview()
 
-  " Use ! as much as possible
-  silent! exec 'normal! v'
-  silent! exec 'silent! normal '.a:text_object
-  " The double quote is important
-  silent! exec "normal! \<Esc>"
+  " Use normal! to ignore user mappings, double quotes for special keys
+  silent! exec 'normal! v'.a:text_object."\<Esc>"
 
   let selection = s:get_visual_selection()
   let ret = {
@@ -303,8 +300,8 @@ endfunction
 " Perform the visual selection at the end. If the user wants to be left in
 " select mode, do so
 function! s:select_region() abort
-  exec 'normal! v'
-  exec 'normal '.s:candidates[s:cur_index].text_object
+  " Use normal! to ignore user mappings
+  exec 'normal! v'.s:candidates[s:cur_index].text_object
   if expand_region#use_select_mode()
     exec "normal! \<C-g>"
   endif
