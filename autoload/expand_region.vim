@@ -243,7 +243,8 @@ def ComputeCandidates(cursor_pos: list<number>): void
   cur_index = -1
   saved_pos = cursor_pos
   candidates = GetCandidateList()
-  filter(sort(candidates, 'SortTextObject'), 'v:val.length > 1')
+  sort(candidates, 'SortTextObject')
+  filter(candidates, 'v:val.length > 1')
   filter(candidates, 'IsCursorInside(saved_pos, v:val)')
   RemoveDuplicate(candidates)
 enddef
