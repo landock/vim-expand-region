@@ -97,9 +97,9 @@ enddef
 
 def GetCandidateDict(text_object: string): dict<any>
   var winview = winsaveview()
-  silent! normal! v
-  execute 'silent! normal ' .. text_object
-  silent! normal! \<Esc>
+  # Must combine v and text_object in single execute - separate normal! commands
+  # don't preserve visual mode. Use double quotes for escape character.
+  execute "silent! normal! v" .. text_object .. "\<Esc>"
   var selection = GetVisualSelection()
   var ret = {
         \ 'text_object': text_object,
@@ -250,10 +250,11 @@ def ComputeCandidates(cursor_pos: list<number>): void
 enddef
 
 def SelectRegion(): void
-  normal! v
-  execute 'normal! ' .. candidates[cur_index].text_object
+  # Must combine v and text_object in single execute - separate normal! commands
+  # don't preserve visual mode
+  execute "normal! v" .. candidates[cur_index].text_object
   if expand_region#UseSelectMode()
-    normal! \<C-g>
+    execute "normal! \<C-g>"
   endif
 enddef
 
