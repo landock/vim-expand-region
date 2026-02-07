@@ -2,9 +2,13 @@ set nocompatible
 filetype off
 set rtp+=.
 set rtp+=vader.vim
+set rtp+=test
 set rtp+=plugin
 filetype plugin indent on
 syntax on
+
+" Source test helper functions
+source test/test_helper.vim
 
 " Disable any conflicting plugins
 let g:expand_region_use_defaults = 1

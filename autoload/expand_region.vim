@@ -47,6 +47,8 @@ endfunction
 
 " Allow user to customize the global dictionary, or the per filetype dictionary
 function! expand_region#custom_text_objects(...) abort
+  " Support calls from vimrc before plugin/expand_region.vim is sourced.
+  call expand_region#init()
   if a:0 == 1
     call extend(g:expand_region_text_objects, a:1)
   elseif a:0 == 2
@@ -61,11 +63,13 @@ endfunction
 " Returns whether we should perform the region highlighting use visual mode or
 " select mode
 function! expand_region#use_select_mode()
+  call expand_region#init()
   return g:expand_region_use_select_mode || index(split(&selectmode, ','), 'cmd') != -1
 endfunction
 
 " Main function
 function! expand_region#next(mode, direction) abort
+  call expand_region#init()
   call s:expand_region(a:mode, a:direction)
 endfunction
 
@@ -317,8 +321,32 @@ function! s:expand_region(mode, direction) abort
   let s:saved_selectmode = &selectmode
   let &selectmode=""
 
+  let selection = {}
+  if a:mode ==# 'v'
+    let selection = s:get_visual_selection()
+  endif
+
   if s:should_compute_candidates(a:mode)
-    call s:compute_candidates(getpos('.'))
+    if a:mode ==# 'v' && s:cur_index >= 0
+      call s:compute_candidates(s:saved_pos)
+    else
+      call s:compute_candidates(getpos('.'))
+    endif
+
+    " In visual mode, align to the current selection so + expands from it.
+    if a:mode ==# 'v' && get(selection, 'length', 0) > 0
+      let found = -1
+      for idx in range(0, len(s:candidates) - 1)
+        if s:candidates[idx].start_pos ==# selection.start_pos
+              \ && s:candidates[idx].length ==# selection.length
+          let found = idx
+          break
+        endif
+      endfor
+      if found >= 0
+        let s:cur_index = found
+      endif
+    endif
   else
     call setpos('.', s:saved_pos)
   endif

@@ -38,28 +38,31 @@ Execute (Expand word executes):
   call setline(1, 'hello world')
   normal! 0w
   call expand_region#next('n', '+')
-  Assert 1, 'Expand word executed without error'
+  Assert ExpandRegionTestVisualText() ==# 'world', 'Should expand to current word'
 
 Execute (Expand to double-quoted string executes):
   call setline(1, '"hello world"')
   normal! 0w
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  Assert 1, 'Expand to quotes executed without error'
+  Assert ExpandRegionTestVisualText() ==# 'hello', 'First expand should select word'
+  call expand_region#next('v', '+')
+  Assert line('.') ==# 1, 'Second expand should complete without moving off the current line'
 
 Execute (Expand to single-quoted string executes):
   call setline(1, "'hello world'")
   normal! 0w
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  Assert 1, 'Expand to single quotes executed without error'
+  Assert ExpandRegionTestVisualText() ==# 'hello', 'First expand should select word'
+  call expand_region#next('v', '+')
+  Assert line('.') ==# 1, 'Second expand should complete without moving off the current line'
 
 Execute (Expand to backtick string executes):
   call setline(1, '`hello world`')
   normal! 0w
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  Assert 1, 'Expand to backticks executed without error'
+  Assert ExpandRegionTestVisualText() ==# 'hello', 'First expand should select word'
+  call expand_region#next('v', '+')
+  Assert line('.') ==# 1, 'Second expand should complete without moving off the current line'
 
 " =============================================================================
 " Section 2: Select Mode Configuration
@@ -90,22 +93,33 @@ Execute (Full cycle executes):
   call setline(1, '"hello (world)"')
   normal! 0w
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '-')
-  call expand_region#next('n', '-')
-  call expand_region#next('n', '-')
-  Assert 1, 'Full cycle executed without error'
+  let len1 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len2 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len3 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '-')
+  let shrink1 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '-')
+  let shrink2 = len(ExpandRegionTestVisualText())
+  Assert len1 > 0 && len2 > 0 && len3 > 0, 'Expand steps should keep a valid selection'
+  Assert shrink1 > 0 && shrink2 > 0, 'Shrink steps should keep a valid selection'
 
 Execute (Nested brackets cycle executes):
   call setline(1, '[ [ [test] ] ]')
   normal! 0
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '-')
-  call expand_region#next('n', '-')
-  Assert 1, 'Nested brackets cycle executed without error'
+  let len1 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len2 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len3 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '-')
+  let shrink1 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '-')
+  let shrink2 = len(ExpandRegionTestVisualText())
+  Assert len1 > 0 && len2 >= len1 && len3 >= len2, 'Nested expands should grow or hold selection'
+  Assert shrink1 <= len3 && shrink2 <= shrink1, 'Nested shrinks should reduce or hold selection'
 
 " =============================================================================
 " Section 4: Recursive Nesting
@@ -116,28 +130,40 @@ Execute (Triple-nested parentheses executes):
   call setline(1, '(( (inner) ))')
   normal! 0
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  Assert 1, 'Triple-nested parentheses executed without error'
+  let len1 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len2 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len3 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len4 = len(ExpandRegionTestVisualText())
+  Assert len1 > 0 && len2 > 0 && len3 > 0 && len4 > 0, 'Recursive paren expands should keep valid selections'
 
 Execute (Triple-nested brackets executes):
   call setline(1, '[ [ [test] ] ]')
   normal! 0
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  Assert 1, 'Triple-nested brackets executed without error'
+  let len1 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len2 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len3 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len4 = len(ExpandRegionTestVisualText())
+  Assert len1 > 0 && len2 >= len1 && len3 >= len2 && len4 >= len3, 'Recursive bracket expands should grow or hold selection'
 
 Execute (Triple-nested braces executes):
   call setline(1, '{ { {item} } }')
   normal! 0
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  Assert 1, 'Triple-nested braces executed without error'
+  let len1 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len2 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len3 = len(ExpandRegionTestVisualText())
+  call expand_region#next('v', '+')
+  let len4 = len(ExpandRegionTestVisualText())
+  Assert len1 > 0 && len2 >= len1 && len3 >= len2 && len4 >= len3, 'Recursive brace expands should grow or hold selection'
 
 " =============================================================================
 " Section 5: Edge Cases
@@ -150,16 +176,17 @@ Execute (Multi-line selection executes):
   call setline(3, 'line three')
   normal! gg0w
   call expand_region#next('n', '+')
-  Assert 1, 'Multi-line selection executed without error'
+  Assert line('$') ==# 3, 'Buffer content should remain stable after expansion'
 
 Execute (Cursor position after expand/shrink):
   call setline(1, '"hello"')
   normal! 0w
   let orig_pos = getpos('.')
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  call expand_region#next('n', '-')
-  Assert getpos('.') !=# orig_pos || 1, 'Position may change during expand/shrink'
+  call expand_region#next('v', '+')
+  call expand_region#next('v', '-')
+  let new_pos = getpos('.')
+  Assert new_pos[1] ==# orig_pos[1], 'Cursor should stay on the same line'
 
 Execute (No more candidates exits gracefully):
   call setline(1, 'a')
@@ -168,25 +195,25 @@ Execute (No more candidates exits gracefully):
   for i in range(20)
     call expand_region#next('n', '+')
   endfor
-  Assert 1, 'No crash when exhausting candidates'
+  Assert line('.') ==# 1, 'Cursor should remain on first line after exhausting candidates'
 
 Execute (Single character line):
   call setline(1, 'a b')
   normal! 0
   call expand_region#next('n', '+')
-  Assert 1, 'Single character handling executed without error'
+  Assert ExpandRegionTestVisualText() ==# 'a', 'Should still select a single-character word'
 
 Execute (Empty line):
   call setline(1, '')
   normal! 0
   call expand_region#next('n', '+')
-  Assert 1, 'Empty line handling executed without error'
+  Assert line('.') ==# 1 && col('.') ==# 1, 'Empty line expansion should keep cursor stable'
 
 Execute (End of line):
   call setline(1, 'hello')
   normal! $
   call expand_region#next('n', '+')
-  Assert 1, 'End of line handling executed without error'
+  Assert ExpandRegionTestVisualText() ==# 'hello', 'End-of-line expansion should select current word'
 
 Execute (Window view preserved):
   call setline(1, 'line 1')
@@ -197,8 +224,9 @@ Execute (Window view preserved):
   normal! gg
   let before_view = winsaveview()
   call expand_region#next('n', '+')
-  call expand_region#next('n', '+')
-  Assert before_view.topline >= 1, 'Window top line is valid'
+  call expand_region#next('v', '+')
+  let after_view = winsaveview()
+  Assert after_view.topline ==# before_view.topline, 'Window top line should be preserved'
 
 Execute (Scroll position after shrink):
   call setline(1, 'line 1')
@@ -211,9 +239,10 @@ Execute (Scroll position after shrink):
   redraw
   call expand_region#next('n', '+')
   redraw
-  call expand_region#next('n', '-')
+  call expand_region#next('v', '-')
   redraw
-  Assert 1, 'Scroll position handling executed without error'
+  let view_after = winsaveview()
+  Assert view_after.topline > 0, 'Scroll position should remain valid after shrink'
 
 " =============================================================================
 " Section 6: Configuration

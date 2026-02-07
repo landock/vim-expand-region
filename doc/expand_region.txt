@@ -173,7 +173,9 @@ Configuration~
     Compound filetypes (e.g., javascript.jsx)
     Global defaults
 
-Current test coverage: 87% of functions, 78+ assertions.
+For current case and assertion counts, run: >
+    bash test/run
+<
 
  ==============================================================================
  6. About                                                 *expand-region-about*
@@ -183,4 +185,3 @@ Current test coverage: 87% of functions, 78+ assertions.
      http://github.com/landock/vim-expand-region
 
   vim:tw=78:sw=4:ft=help:norl:
-
