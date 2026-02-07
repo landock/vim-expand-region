@@ -301,7 +301,11 @@ def ExpandRegion(mode: string, direction: string): void
         normal! gV
       endif
     else
-      call winrestview(candidates[cur_index].prev_winview)
+      # Manual visual selections can create a valid cur_index without any
+      # saved window view attached to the candidate.
+      if has_key(candidates[cur_index], 'prev_winview')
+        call winrestview(candidates[cur_index].prev_winview)
+      endif
       cur_index -= 1
       call SelectRegion()
     endif

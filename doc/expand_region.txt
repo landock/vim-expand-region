@@ -39,7 +39,7 @@ http://stackoverflow.com/questions/4264047/intellij-ctrlw-equivalent-shortcut-in
 Press '+' to expand the visual selection and '_' to shrink it.
 
 ==============================================================================
-3. Mappings                                           *expand_region-mappings*
+3. Mappings                                           *expand-region-mappings*
 
 Customize the key mappings if you don't like the default. >
 

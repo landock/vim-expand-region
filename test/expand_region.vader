@@ -75,3 +75,11 @@ Execute (Shrink functionality):
   Assert ExpandRegionTestVisualText() ==# 'hello world', 'Expand should select inside quotes'
   call feedkeys('_', 'xt')
   Assert ExpandRegionTestVisualText() !=# 'hello world', 'Shrink should reduce selection'
+
+Execute (Manual visual shrink does not error):
+  enew!
+  call setline(1, '"hello world"')
+  normal! gg0viw
+  let v:errmsg = ''
+  call feedkeys('_', 'xt')
+  Assert v:errmsg ==# '', 'Shrink from manual visual selection should not raise errors'
